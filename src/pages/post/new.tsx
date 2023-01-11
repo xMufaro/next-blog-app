@@ -44,7 +44,7 @@ const New: NextPage = () => {
       userToken
     ).then((r) => {
       if (r.error) throw new Error(r.error);
-      router.push(`/post/view/${r.post.id}`);
+      router.push(`/post/view/${r.post.posts[r.post.posts.length - 1].id}`);
     });
   }
 

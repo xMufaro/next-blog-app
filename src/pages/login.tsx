@@ -6,29 +6,28 @@ import axios from "axios";
 import Link from "next/link";
 
 const Login: NextPage = () => {
-  const usernameRef = useRef<HTMLInputElement>(null);
-  const passwordRef = useRef<HTMLInputElement>(null);
+  const [loginData, setLoginData] = useState({
+    login: "",
+    password: ""
+  })
   const router = useRouter();
   const [isLogged, setLogin] = useState<boolean>(true);
 
   const onSubmit = async () => {
-    await axios
-      .post("/api/auth/login", {
-        body: {
-          username: usernameRef?.current?.value,
-          password: passwordRef?.current?.value,
-        },
+    await fetch('api/auth/login', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        username: loginData.login,
+        passowrd: loginData.password
       })
+    }).then(async res => await res.json())
       .then(async (res) => {
-        if (res?.status === 200) {
-          console.log(res.data);
-          localStorage.setItem("account-token", res.data);
-          router.push("/home");
-          setLogin(true);
-        } else {
-          console.log(false);
-          setLogin(false);
-        }
+        localStorage.setItem("account-token", res.token);
+        router.push("/home");
+        setLogin(true);
       });
   };
 
@@ -55,7 +54,10 @@ const Login: NextPage = () => {
                   Username
                 </label>
                 <input
-                  ref={usernameRef}
+                  onChange={(e) => setLoginData({
+                    ...loginData,
+                    login: e.target.value
+                  })}
                   type="text"
                   className="focus:shadow-outline w-full appearance-none rounded border border-slate-500 py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none"
                 />
@@ -65,8 +67,11 @@ const Login: NextPage = () => {
                   Password
                 </label>
                 <input
-                  ref={passwordRef}
-                  type="password"
+                  onChange={(e) => setLoginData({
+                    ...loginData,
+                    password: e.target.value
+                  })}
+type="password"
                   className="focus:shadow-outline w-full appearance-none rounded border border-slate-500 py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none"
                 />
               </div>

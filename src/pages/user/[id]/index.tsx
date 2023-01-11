@@ -110,7 +110,6 @@ const Index: NextPage = () => {
       <Head>
         <title>Profile - {user?.username}</title>
       </Head>
-      <NavBar />
 
       {user ? (
         <main className="flex min-h-screen flex-col bg-gradient-to-b from-[#2e026d] to-[#15162c]">
@@ -134,7 +133,7 @@ const Index: NextPage = () => {
                 <p className="text-white ">{user?.bio ? user.bio : "No bio"}</p>
               </div>
               <span className=" rounded-xl bg-gray-600 px-[50%] text-[2px]" />
-              <div className="m-[1vh] flex flex-col gap-4 text-neutral-200">
+              <div className="m-[1vh] flex flex-col gap-4 text-neutral-200 overflow-y-scroll">
                 {user?.posts
                   ? user?.posts.map((post: PostPreview) => {
                       return (
@@ -177,10 +176,13 @@ const Index: NextPage = () => {
               </div>
             </div>
           </div>
+          <NavBar />
         </main>
+        
       ) : (
         <div>User not found!</div>
       )}
+
     </div>
   );
 };

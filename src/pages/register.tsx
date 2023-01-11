@@ -1,24 +1,37 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import React, {useRef, useState}  from "react";
+import {
+    useRouter
+} from "next/router"
 import axios from "axios";
 
 const Register: NextPage = () => {
     
-    const usernameRef = useRef<HTMLInputElement>(null);
-    const passwordRef = useRef<HTMLInputElement>(null);
-    const emailRef = useRef<HTMLInputElement>(null);
+    const router = useRouter();
+    const [registerData, setRegisterData] = useState({
+        username: "",
+        password: "",
+        email: ""
+    });
 
 
     const onSubmit = async (e: any) => {
         e.preventDefault();
-        if(!usernameRef.current || !passwordRef.current || !emailRef.current) return;
-        await axios.post('/api/auth/register', {
-            body: {
-                username: usernameRef.current.value,
-                password: passwordRef.current.value,
-                email: emailRef.current.value
-            }
+        if(!registerData.username || !registerData.password || !registerData.email) return;
+        await fetch('/api/auth/register', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                username: registerData.username,
+                password: registerData.password,
+                email: registerData.email
+            })
+        }).then(async res => await res.json()).then(async res => {
+            localStorage.setItem("account-token", res.token),
+            router.push("/home")
         })
     }
 
@@ -35,15 +48,24 @@ const Register: NextPage = () => {
                             <h1 className="block text-gray-700 text-2xl font-bold mb-2">Register</h1>
                             <div className="flex flex-col">
                                 <label className="block text-gray-700 text-sm font-bold mb-2">Email</label>
-                                <input ref={emailRef} type="text" className="shadow appearance-none border border-slate-500 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required={true} />
+                                <input onChange={(e) => setRegisterData({
+                                    ...registerData,
+                                    email: e.target.value
+                                })} type="text" className="shadow appearance-none border border-slate-500 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required={true} />
                             </div>
                             <div className="flex flex-col">
                                 <label className="block text-gray-700 text-sm font-bold mb-2">Username</label>
-                                <input ref={usernameRef}type="text" className="shadow appearance-none border border-slate-500 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required={true} />
+                                <input onChange={(e) => setRegisterData({
+                                    ...registerData,
+                                    username: e.target.value
+                                })} type="text" className="shadow appearance-none border border-slate-500 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required={true} />
                             </div>
                             <div className="flex flex-col">
                                 <label className="block text-gray-700 text-sm font-bold mb-2">Password</label>
-                                <input ref={passwordRef} type="password" className="shadow appearance-none border border-slate-500 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required={true} />
+                                <input onChange={(e) => setRegisterData({
+                                    ...registerData,
+                                    password: e.target.value
+                                })} type="password" className="shadow appearance-none border border-slate-500 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required={true} />
                             </div>
                             <div className="flex flex-col">
                                 <label className="block text-gray-700 text-sm font-light mb-2">Want to log in?</label>

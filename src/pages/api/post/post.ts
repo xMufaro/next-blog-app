@@ -35,6 +35,9 @@ const post = async (req: NextApiRequest, res: NextApiResponse) => {
             },
           },
         },
+        include: {
+          posts: true
+        }
       });
       res.status(200).json({ message: "Post created!", post: post });
       break;

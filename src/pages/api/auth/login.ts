@@ -7,7 +7,7 @@ const user = async (req: NextApiRequest, res: NextApiResponse) => {
     const { method } = req;
     switch(method) {
         case "POST": {
-            const { username, password } = req.body.body;
+            const { username, password } = req.body;
             const user = await prisma.user.findFirst({
                 where: {
                     username: username,
@@ -18,7 +18,7 @@ const user = async (req: NextApiRequest, res: NextApiResponse) => {
                 res.json({ message: "User not found!" })
                 return;
             }
-            res.status(200).send(user.token);
+            res.status(200).send(user);
         }
         default: {
             return res.status(400).json({ message: "Bad request!" });

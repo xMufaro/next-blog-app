@@ -11,7 +11,7 @@ const register = async (req: NextApiRequest, res: NextApiResponse) => {
     const { method } = req;
     switch(method) {
         case "POST": {
-            const { username, password, email } = req.body.body;
+            const { username, password, email } = req.body;
             console.log(username, password, email)
             const user = await prisma.user.create({
                 data: {
@@ -20,7 +20,7 @@ const register = async (req: NextApiRequest, res: NextApiResponse) => {
                     email: email,
                     token: generateToken()  
                 }})
-
+            console.log(user);
             res.status(200)
             return res.json(user);
         }
